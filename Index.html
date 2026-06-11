@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preface HR Assistant</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+
+    <style>
+        /* Reset and structure to force a sleek, immersive full-page experience */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            overflow: hidden;
+        }
+
+        /* Container that the n8n chat library will mount into */
+        #n8n-chat-container {
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* ==========================================================================
+           @n8n/chat CSS Variables Overrides (Theming Customization)
+           ========================================================================== */
+        :root {
+            /* Brand Color Scheme */
+            --n8n-chat-primary-color: #0066cc;          /* Preface Corporate/Brand Accent */
+            --n8n-chat-background-color: #ffffff;       /* Main chat window backdrop */
+            --n8n-chat-text-color: #1e293b;             /* Highly readable dark slate text */
+            
+            /* Messages appearance */
+            --n8n-chat-user-message-background: #e2e8f0;/* Distinct color for employee queries */
+            --n8n-chat-user-message-text: #0f172a;
+            --n8n-chat-bot-message-background: #f1f5f9; /* Soft gray for AI response text */
+            --n8n-chat-bot-message-text: #1e293b;
+            
+            /* Interface Elements */
+            --n8n-chat-border-color: #e2e8f0;
+            --n8n-chat-input-placeholder-color: #94a3b8;
+            --n8n-chat-font-family: inherit;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="n8n-chat-container"></div>
+
+    <script type="module">
+        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+
+        createChat({
+            // 1. Core Connection Configuration
+            webhookUrl: 'https://williamng2.app.n8n.cloud/webhook/f3b76d48-2dd0-49d2-a968-86b1aae7ee57/chat', // <--- Insert your n8n Chat Trigger Webhook production URL here
+            webhookConfig: {
+                method: 'POST',
+                headers: {
+                    // Inject security tokens or explicit tenant identification metadata here if necessary
+                    'Content-Type': 'application/json'
+                }
+            },
+
+            // 2. Layout, Display & Target Settings
+            target: '#n8n-chat-container',
+            mode: 'fullscreen',              // Forces interface to occupy 100% dimensions of the target container
+            showWelcomeScreen: true,         // Presents metadata title & subtitle before starting chat
+
+            // 3. Langchain Memory Payload Mapping Keynames
+            chatInputKey: 'chatInput',       // Mapping property matching n8n Chat Trigger Input configuration
+            chatSessionKey: 'sessionId',     // The tracking variable used to reference historical memory strings
+            loadPreviousSession: true,       // Instructs n8n to call `loadPreviousSession` context maps upon reloading
+            
+            // 4. Input File Handling Capabilities
+            allowFileUploads: false,          // Toggle to true if your n8n workflow processes documents (e.g. medical certificates)
+            allowedFilesMimeTypes: 'image/*,application/pdf', 
+
+            // 5. Streaming Capabilities
+            enableStreaming: false,          // Turn to true if your Chat Trigger Node has "Streaming response" checked
+
+            // 6. Extensible Custom Handlers
+            metadata: {
